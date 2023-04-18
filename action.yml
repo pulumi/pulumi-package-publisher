@@ -1,4 +1,4 @@
-name: 'Hello World'
+name: 'A GitHub composite action for publishing Pulumi packages'
 description: 'Greet someone'
 inputs:
   who-to-greet:  # id of input
