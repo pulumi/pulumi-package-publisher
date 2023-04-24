@@ -1,37 +1,5 @@
 name: 'Hello World'
 description: 'Greet someone'
-inputs:
-#  provider-repo:
-#    description: Target provider
-#    required: true
-#    default: ''
-#  pypi-password:  
-#    description: PyPi password
-#    required: true
-#    default: ''
-#  python-version:
-#    description: Python version
-#    required: true
-#    default: "3.9"
-#  java-version:
-#    description: Java version
-#    required: true
-#    default: "11"
-#  node-version:
-#    description: Node version
-#    required: true
-#    default: "16.x"
-#  go-version:
-#    description: Go version
-#    required: true
-#    default: "1.20.1"
-  # dotnet-version:
-  #   description: Dotnet version
-  #   required: true
-  #   default: |
-  #   "6.0.x"
-  #   "3.1.301"
-
 runs:
   using: "composite"
   steps:
