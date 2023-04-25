@@ -95,7 +95,7 @@ runs:
       shell: bash
     - name: Publish Node, Python, Dotnet SDKs
       env:
-        NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
       run: ./ci-scripts/ci/publish-tfgen-package ${{ github.workspace }}
       shell: bash
     - name: Set PACKAGE_VERSION to Env
