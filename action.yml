@@ -102,6 +102,7 @@ runs:
         $GITHUB_ENV
       shell: bash
     - name: Publish Java SDK
+      continue-on-error: true
       uses: gradle/gradle-build-action@9b814496b50909128c6a52622b416c5ffa04db49
       with:
         arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository
