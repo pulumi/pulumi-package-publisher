@@ -4,9 +4,9 @@ runs:
   using: "composite"
   steps:
     - name: Verify versions
-      run: echo ${{ env.GOVERSION }} \
-        echo ${{ env.NODEVERSION }} \
-        echo ${{ env.DOTNETVERSION }} \
+      run: echo ${{ env.GOVERSION }} &&
+        echo ${{ env.NODEVERSION }} &&
+        echo ${{ env.DOTNETVERSION }} &&
         echo ${{ env.PYTHONVERSION }}
       shell: bash
     - name: Checkout Repo
