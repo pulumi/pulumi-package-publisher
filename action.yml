@@ -1,5 +1,5 @@
-name: 'Hello World'
-description: 'Greet someone'
+name: 'Pulumi Package publisher'
+description: 'A GitHub Action that publishes provider SDKs'
 runs:
   using: "composite"
   steps:
