@@ -38,27 +38,27 @@ runs:
         repo: pulumi/pulumictl
     - name: Install Pulumi CLI
       uses: pulumi/action-install-pulumi-cli@v2
-    - name: Setup Node
-      uses: actions/setup-node@v2
-      with:
-        node-version: ${{ env.NODEVERSION }}
-        registry-url: https://registry.npmjs.org
-    - name: Download nodejs SDK
-      uses: actions/download-artifact@v2
-      with:
-        name: nodejs-sdk.tar.gz
-        path: ${{ github.workspace }}/sdk/
-    - name: Uncompress nodejs SDK
-      run: tar -zxf ${{ github.workspace }}/sdk/nodejs.tar.gz -C
-        ${{ github.workspace }}/sdk/nodejs
-      shell: bash
-    - name: Publish Node
-      env:
-        NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
-        NO_TFGEN_PYTHON_PACKAGE: skip-python-publishing
-        NUGET_PUBLISH_KEY: ''
-      run: ./ci-scripts/ci/publish-tfgen-package ${{ github.workspace }}
-      shell: bash
+#    - name: Setup Node
+#      uses: actions/setup-node@v2
+#      with:
+#        node-version: ${{ env.NODEVERSION }}
+#        registry-url: https://registry.npmjs.org
+#    - name: Download nodejs SDK
+#      uses: actions/download-artifact@v2
+#      with:
+#        name: nodejs-sdk.tar.gz
+#        path: ${{ github.workspace }}/sdk/
+#    - name: Uncompress nodejs SDK
+#      run: tar -zxf ${{ github.workspace }}/sdk/nodejs.tar.gz -C
+#        ${{ github.workspace }}/sdk/nodejs
+#      shell: bash
+#    - name: Publish Node
+#      env:
+#        NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
+#        NO_TFGEN_PYTHON_PACKAGE: skip-python-publishing
+#        NUGET_PUBLISH_KEY: ''
+#      run: ./ci-scripts/ci/publish-tfgen-package ${{ github.workspace }}
+#      shell: bash
     - name: Setup DotNet
       if: ${{ inputs.dotnet }}
       uses: actions/setup-dotnet@v1
@@ -74,9 +74,8 @@ runs:
         ${{ github.workspace }}/sdk/dotnet
       shell: bash
     - name: Publish dotnet SDK
-      run: if [ -n "${NUGET_PUBLISH_KEY}" ]; then
-        find "${{ github.workspace }}/sdk/dotnet/bin/Debug/" -name 'Pulumi.*.nupkg'
-        -exec dotnet nuget push -k "${NUGET_PUBLISH_KEY}" -s https://api.nuget.org/v3/index.json {} ; fi
+      run: find "${{ github.workspace }}/sdk/dotnet/bin/Debug/" -name 'Pulumi.*.nupkg'
+        -exec echo {} \; fi
       shell: bash
     - name: Setup Python
       uses: actions/setup-python@v2
