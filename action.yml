@@ -73,10 +73,10 @@ runs:
       run: tar -zxf ${{ github.workspace }}/sdk/dotnet.tar.gz -C
         ${{ github.workspace }}/sdk/dotnet
       shell: bash
-    - name: Publish nodejs SDK
+    - name: Publish dotnet SDK
       run: if [ -n "${NUGET_PUBLISH_KEY}" ]; then
         find "${{ github.workspace }}/sdk/dotnet/bin/Debug/" -name 'Pulumi.*.nupkg'
-        -exec dotnet nuget push -k "${NUGET_PUBLISH_KEY}" -s https://api.nuget.org/v3/index.json {}; fi
+        -exec bash -c "dotnet nuget push -k \"${NUGET_PUBLISH_KEY}\" -s https://api.nuget.org/v3/index.json {}"; fi
       shell: bash
     - name: Setup Python
       uses: actions/setup-python@v2
