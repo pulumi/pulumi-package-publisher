@@ -9,7 +9,7 @@ runs:
   using: "composite"
   steps:
     - name: Verify input
-      run: echo 'Publishing SDK:' && echo inputs.sdk
+      run: echo 'Publishing SDK:' && echo ${{ inputs.sdk }}
       shell: bash
     - name: Checkout Repo
       uses: actions/checkout@v3
