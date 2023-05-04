@@ -49,15 +49,15 @@ Optionally, you may specify language SDKs individually:
 ```yaml
 steps:
   - name: Publish nodejs SDK
-    uses: pulumi/pulumi-package-publisher@v0.0.5
+    uses: pulumi/pulumi-package-publisher@0058a106b68d8277f17bbea0cd29b2ff6e671adc
     with:
       sdk: nodejs
   - name: Publish Java SDK
-    uses: pulumi/pulumi-package-publisher@v0.0.5
+    uses: pulumi/pulumi-package-publisher@0058a106b68d8277f17bbea0cd29b2ff6e671adc
     with:
       sdk: java
   - name: Publish Python SDK
-    uses: pulumi/pulumi-package-publisher@v0.0.5
+    uses: pulumi/pulumi-package-publisher@0058a106b68d8277f17bbea0cd29b2ff6e671adc
     with:
       sdk: python
 ```
