@@ -148,26 +148,3 @@ runs:
         arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository
         build-root-directory: ./sdk/java
         gradle-version: 7.4.1
-    - name: Notify success
-      env:
-        SLACK_CHANNEL: provider-upgrade-status
-        SLACK_COLOR: "#00FF00"
-        SLACK_MESSAGE: |-
-          Publish succeeded :heart_decoration:
-        SLACK_TITLE: ${{ github.event.repository.name }} Publish result
-        SLACK_USERNAME: provider-bot
-        SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK_URL }}
-        SLACK_ICON_EMOJI: ":taco:"
-      uses: rtCamp/action-slack-notify@v2
-    - name: Notify failure
-      env:
-        SLACK_CHANNEL: provider-upgrade-status
-        SLACK_COLOR: "#FF0000"
-        SLACK_MESSAGE: |-
-          Publish failed :x:
-        SLACK_TITLE: ${{ github.event.repository.name }} upgrade result
-        SLACK_USERNAME: provider-bot
-        SLACK_WEBHOOK: ${{ env.SLACK_WEBHOOK_URL }}
-        SLACK_ICON_EMOJI: ":taco:"
-      if: ${{ failure() }}
-      uses: rtCamp/action-slack-notify@v2
