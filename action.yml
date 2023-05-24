@@ -5,6 +5,7 @@ inputs:
     description: The name of the language SDK being published
     required: false
     default: 'all'
+
 runs:
   using: "composite"
   steps:
@@ -15,11 +16,6 @@ runs:
       uses: actions/checkout@v3
       with:
         repository: ${{ github.repository }}
-    - name: Checkout Scripts Repo
-      uses: actions/checkout@v3
-      with:
-        path: ci-scripts
-        repository: pulumi/scripts
     - name: Unshallow clone for tags
       run: git fetch --prune --unshallow --tags
       shell: bash
@@ -35,7 +31,7 @@ runs:
       uses: pulumi/action-install-pulumi-cli@v2
     - name: Setup Node
       if: inputs.sdk == 'nodejs' || inputs.sdk == 'all'
-      uses: actions/setup-node@v2
+      uses: actions/setup-node@v3
       with:
         node-version: ${{ env.NODEVERSION }}
         registry-url: https://registry.npmjs.org
@@ -50,14 +46,17 @@ runs:
       run: tar -zxf ${{ github.workspace }}/sdk/nodejs.tar.gz -C
         ${{ github.workspace }}/sdk/nodejs
       shell: bash
+    - name: Run npm whoami
+      run: npm whoami
+      shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
     - name: Publish Node
       if: inputs.sdk == 'nodejs' || inputs.sdk == 'all'
-      env:
-        NODE_AUTH_TOKEN: ${{ env.NPM_TOKEN }}
-        NO_TFGEN_PYTHON_PACKAGE: skip-python-publishing
-        NUGET_PUBLISH_KEY: ''
-      run: ./ci-scripts/ci/publish-tfgen-package ${{ github.workspace }}
+      run: pulumi package publish-sdk nodejs --path ${{ github.workspace }}/sdk/nodejs/bin
       shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
     - name: Setup DotNet
       if: inputs.sdk == 'dotnet' || inputs.sdk == 'all'
       uses: actions/setup-dotnet@v1
