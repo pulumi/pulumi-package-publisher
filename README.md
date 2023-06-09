@@ -27,7 +27,6 @@ env:
     SIGNING_KEY_ID: ${{ secrets.JAVA_SIGNING_KEY_ID }}
     SIGNING_PASSWORD: ${{ secrets.JAVA_SIGNING_PASSWORD }}
     SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
-    TRAVIS_OS_NAME: linux
 ```
 
 ### Use
@@ -41,7 +40,7 @@ Add this action to your Workflow as a step to publish to all four supported regi
 ```yaml
 steps:
   - name: Publish all SDKs
-    uses: pulumi/pulumi-package-publisher@v0.0.5
+    uses: pulumi/pulumi-package-publisher@v0.0.6
 ```
 
 Optionally, you may specify language SDKs individually:
