@@ -47,6 +47,7 @@ runs:
         ${{ github.workspace }}/sdk/nodejs
       shell: bash
     - name: Run npm whoami
+      if: inputs.sdk == 'nodejs' || inputs.sdk == 'all'
       run: npm whoami
       shell: bash
       env:
