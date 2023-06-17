@@ -52,6 +52,35 @@ runs:
       shell: bash
       env:
         NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
+    - name: Add Node scripts.sh
+      # TODO: https://github.com/pulumi/pulumi/issues/13195 Move this hotfix to the Pulumi CLI.
+      if: inputs.sdk == 'nodejs' || inputs.sdk == 'all'
+      run: |
+        mkdir -p ${{ github.workspace }}/sdk/nodejs/bin/scripts
+        cat << 'EOF' > ${{ github.workspace }}/sdk/nodejs/bin/scripts/install-pulumi-plugin.js
+        "use strict";
+        var childProcess = require("child_process");
+
+        var args = process.argv.slice(2);
+        var res = childProcess.spawnSync("pulumi", ["plugin", "install"].concat(args), {
+            stdio: ["ignore", "inherit", "inherit"]
+        });
+
+        if (res.error && res.error.code === "ENOENT") {
+            console.error("\nThere was an error installing the resource provider plugin. " +
+                    "It looks like `pulumi` is not installed on your system. " +
+                    "Please visit https://pulumi.com/ to install the Pulumi CLI.\n" +
+                    "You may try manually installing the plugin by running " +
+                    "`pulumi plugin install " + args.join(" ") + "`");
+        } else if (res.error || res.status !== 0) {
+            console.error("\nThere was an error installing the resource provider plugin. " +
+                    "You may try to manually installing the plugin by running " +
+                    "`pulumi plugin install " + args.join(" ") + "`");
+        }
+
+        process.exit(0);
+        EOF
+      shell: bash
     - name: Publish Node
       if: inputs.sdk == 'nodejs' || inputs.sdk == 'all'
       run: pulumi package publish-sdk nodejs --path ${{ github.workspace }}/sdk/nodejs/bin
@@ -101,8 +130,8 @@ runs:
       shell: bash
     - name: Publish Python SDK
       if: inputs.sdk == 'python' || inputs.sdk == 'all'
-      run: if [ -n "${PYPI_USERNAME}" ] ; 
-        then PYPI_PUBLISH_USERNAME=${PYPI_USERNAME}; 
+      run: if [ -n "${PYPI_USERNAME}" ] ;
+        then PYPI_PUBLISH_USERNAME=${PYPI_USERNAME};
         else PYPI_PUBLISH_USERNAME="pulumi";
         fi &&
         echo "Publishing Pip package to pypi as ${PYPI_PUBLISH_USERNAME}:" &&
