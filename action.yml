@@ -60,7 +60,7 @@ runs:
         NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
     - name: Setup DotNet
       if: inputs.sdk == 'dotnet' || inputs.sdk == 'all'
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v3
       with:
         dotnet-version: ${{ env.DOTNETVERSION }}
     - name: Download dotnet SDK
