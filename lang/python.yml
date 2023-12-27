@@ -1,0 +1,34 @@
+name: 'Publish to PyPi'
+description: 'A subcomponent of pulumi-package-publish'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: ${{ env.PYTHONVERSION }}
+    - name: Download python SDK
+      uses: actions/download-artifact@v2
+      with:
+        name: python-sdk.tar.gz
+        path: ${{ github.workspace }}/sdk/
+    - name: Uncompress python SDK
+      run: tar -zxf ${{ github.workspace }}/sdk/python.tar.gz -C
+        ${{ github.workspace }}/sdk/python
+      shell: bash
+    - name: Install Twine
+      run: python -m pip install pip twine
+      shell: bash
+    - name: Publish Python SDK
+      run: if [ -n "${PYPI_USERNAME}" ] ;
+        then PYPI_PUBLISH_USERNAME=${PYPI_USERNAME};
+        else PYPI_PUBLISH_USERNAME="pulumi";
+        fi &&
+        echo "Publishing Pip package to pypi as ${PYPI_PUBLISH_USERNAME}:" &&
+        twine upload
+        -u "${PYPI_PUBLISH_USERNAME}" -p "${PYPI_PASSWORD}"
+        "${{ github.workspace }}/sdk/python/bin/dist/*"
+        --skip-existing
+        --verbose
+      shell: bash

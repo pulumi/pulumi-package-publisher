@@ -1,0 +1,23 @@
+name: 'Publish to Nuget'
+description: 'A subcomponent of pulumi-package-publish'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup DotNet
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: ${{ env.DOTNETVERSION }}
+    - name: Download dotnet SDK
+      uses: actions/download-artifact@v2
+      with:
+        name: dotnet-sdk.tar.gz
+        path: ${{ github.workspace }}/sdk/
+    - name: Uncompress dotnet SDK
+      run: tar -zxf ${{ github.workspace }}/sdk/dotnet.tar.gz -C
+        ${{ github.workspace }}/sdk/dotnet
+      shell: bash
+    - name: Publish dotnet SDK
+      run: find "${{ github.workspace }}/sdk/dotnet/bin/Debug/" -name 'Pulumi.*.nupkg'
+        -exec dotnet nuget push -k "${NUGET_PUBLISH_KEY}" -s https://api.nuget.org/v3/index.json {} \;
+      shell: bash

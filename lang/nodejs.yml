@@ -1,0 +1,30 @@
+name: 'Publish to NPM'
+description: 'A subcomponent of pulumi-package-publish'
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Node
+      uses: actions/setup-node@v3
+      with:
+        node-version: ${{ env.NODEVERSION }}
+        registry-url: https://registry.npmjs.org
+    - name: Download nodejs SDK
+      uses: actions/download-artifact@v2
+      with:
+        name: nodejs-sdk.tar.gz
+        path: ${{ github.workspace }}/sdk/
+    - name: Uncompress nodejs SDK
+      run: tar -zxf ${{ github.workspace }}/sdk/nodejs.tar.gz -C
+        ${{ github.workspace }}/sdk/nodejs
+      shell: bash
+    - name: Run npm whoami
+      run: npm whoami
+      shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
+    - name: Publish Node
+      run: pulumi package publish-sdk nodejs --path ${{ github.workspace }}/sdk/nodejs/bin
+      shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
