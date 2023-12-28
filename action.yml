@@ -75,14 +75,14 @@ runs:
       shell: bash
 
     - name: Nodejs - Publish to NPM
-      uses: ./.pulumi-package-publish/lang/nodejs.yml
+      uses: ./.pulumi-package-publish/lang/nodejs
       if: (contains(inputs.sdk, 'nodejs') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!nodejs')
     - name: .NET - Publish to Nuget
       if: (contains(inputs.sdk, 'dotnet') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!dotnet')
-      uses: ./.pulumi-package-publish/lang/dotnet.yml
+      uses: ./.pulumi-package-publish/lang/dotnet
     - name: Python - Publish to PyPi
       if: (contains(inputs.sdk, 'python') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!python')
-      uses: ./.pulumi-package-publish/lang/python.yml
+      uses: ./.pulumi-package-publish/lang/python
     - name: Java - Publish to Maven
       if: (contains(inputs.sdk, 'java') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!java')
-      uses: ./.pulumi-package-publish/lang/java.yml
+      uses: ./.pulumi-package-publish/lang/java
