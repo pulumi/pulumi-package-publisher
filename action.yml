@@ -60,7 +60,7 @@ runs:
     # `uses:` statements do not support expressions
     # (https://github.com/actions/runner/issues/895), so this is invalid:
     #
-    #   ${{ github.action_path }}/langs
+    #   ${{ github.action_path }}/lang
     #
     # This is a problem for nested composite actions, which are unable to specify a
     # `uses:` relative to the main composite action.
@@ -70,19 +70,19 @@ runs:
     # then moving the desired action to the static path at runtime.
     - name: Setup Language Workflows
       run: |
-        mkdir -p ./.pulumi-package-publish/langs
-        cp -r ${{ github.action_path }}/langs ./.pulumi-package-publish/langs
+        mkdir -p ./.pulumi-package-publish/lang
+        cp -r ${{ github.action_path }}/lang ./.pulumi-package-publish/lang
       shell: bash
 
     - name: Nodejs - Publish to NPM
-      uses: ./.pulumi-package-publish/langs/langs/nodejs.yml
+      uses: ./.pulumi-package-publish/lang/nodejs.yml
       if: (contains(inputs.sdk, 'nodejs') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!nodejs')
     - name: .NET - Publish to Nuget
       if: (contains(inputs.sdk, 'dotnet') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!dotnet')
-      uses: ./.pulumi-package-publish/langs/langs/dotnet.yml
+      uses: ./.pulumi-package-publish/lang/dotnet.yml
     - name: Python - Publish to PyPi
       if: (contains(inputs.sdk, 'python') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!python')
-      uses: ./.pulumi-package-publish/langs/langs/python.yml
+      uses: ./.pulumi-package-publish/lang/python.yml
     - name: Java - Publish to Maven
       if: (contains(inputs.sdk, 'java') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!java')
-      uses: ./.pulumi-package-publish/langs/langs/java.yml
+      uses: ./.pulumi-package-publish/lang/java.yml
