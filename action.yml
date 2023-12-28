@@ -56,14 +56,14 @@ runs:
     - name: Install Pulumi CLI
       uses: pulumi/action-install-pulumi-cli@v2
     - name: Nodejs - Publish to NPM
-      uses: ./lang/nodejs.yml
+      uses: ${{ github.action_path }}/lang/nodejs.yml
       if: (contains(inputs.sdk, 'nodejs') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!nodejs')
     - name: .NET - Publish to Nuget
       if: (contains(inputs.sdk, 'dotnet') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!dotnet')
-      uses: ./lang/dotnet.yml
+      uses: ${{ github.action_path }}/lang/dotnet.yml
     - name: Python - Publish to PyPi
       if: (contains(inputs.sdk, 'python') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!python')
-      uses: ./lang/python.yml
+      uses: ${{ github.action_path }}/lang/python.yml
     - name: Java - Publish to Maven
       if: (contains(inputs.sdk, 'java') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!java')
-      uses: ./lang/java.yml
+      uses: ${{ github.action_path }}/lang/java.yml
