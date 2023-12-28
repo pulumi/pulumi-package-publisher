@@ -70,7 +70,7 @@ runs:
     # then moving the desired action to the static path at runtime.
     - name: Setup Language Workflows
       run: |
-        mkdir -p ./.pulumi-package-publish/lang
+        mkdir ./.pulumi-package-publish
         cp -r ${{ github.action_path }}/lang ./.pulumi-package-publish/lang
       shell: bash
 
