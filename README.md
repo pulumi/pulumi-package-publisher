@@ -43,23 +43,9 @@ steps:
     uses: pulumi/pulumi-package-publisher@v0.0.6
 ```
 
-Optionally, you may specify language SDKs individually or in a comma separated list:
+#### `with.sdk`
 
-```yaml
-steps:
-  - name: Publish nodejs SDK
-    uses: pulumi/pulumi-package-publisher@0058a106b68d8277f17bbea0cd29b2ff6e671adc
-    with:
-      sdk: nodejs
-  - name: Publish Java and Python SDKs
-    uses: pulumi/pulumi-package-publisher@0058a106b68d8277f17bbea0cd29b2ff6e671adc
-    with:
-      sdk: java,python
-  - name: Publish every SDK except .NET
-    uses: pulumi/pulumi-package-publisher@0058a106b68d8277f17bbea0cd29b2ff6e671adc
-    with:
-      sdk: all,!dotnet
-```
+Optionally, you may specify language SDKs individually or in a comma separated list.
 
 Valid inputs to `with.sdk` are:
 
@@ -69,3 +55,32 @@ Valid inputs to `with.sdk` are:
 - `nodejs` - Publish to npm
 - `dotnet` - Publish to nuget
 - `!${LANG}` - To disable any of the above languages.
+
+##### Examples
+
+###### Publish the NodeJS SDK Only
+
+```yaml
+steps:
+  - uses: pulumi/pulumi-package-publisher@main
+    with:
+      sdk: nodejs
+```
+
+###### Publish the Java and Python SDKs
+
+```yaml
+steps:
+  - uses: pulumi/pulumi-package-publisher@main
+    with:
+      sdk: java,python
+```
+
+###### Publish every SDK except .NET
+
+```yaml
+steps:
+  - uses: pulumi/pulumi-package-publisher@main
+    with:
+      sdk: all,!dotnet
+```
