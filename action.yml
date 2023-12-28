@@ -55,15 +55,34 @@ runs:
         repo: pulumi/pulumictl
     - name: Install Pulumi CLI
       uses: pulumi/action-install-pulumi-cli@v2
+
+
+    # `uses:` statements do not support expressions
+    # (https://github.com/actions/runner/issues/895), so this is invalid:
+    #
+    #   ${{ github.action_path }}/langs
+    #
+    # This is a problem for nested composite actions, which are unable to specify a
+    # `uses:` relative to the main composite action.
+    #
+    # While they need to be static, they do not need to be resolved. We can work around
+    # the static requirement by specifying a local static path in downstream `uses:`, and
+    # then moving the desired action to the static path at runtime.
+    - name: Setup Language Workflows
+      run: |
+        mkdir -p ./.pulumi-package-publish/langs
+        cp -r ${{ github.action_path }}/langs ./.pulumi-package-publish/langs
+      shell: bash
+
     - name: Nodejs - Publish to NPM
-      uses: ${{ github.action_path }}/lang/nodejs.yml
+      uses: ./.pulumi-package-publish/langs/langs/nodejs.yml
       if: (contains(inputs.sdk, 'nodejs') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!nodejs')
     - name: .NET - Publish to Nuget
       if: (contains(inputs.sdk, 'dotnet') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!dotnet')
-      uses: ${{ github.action_path }}/lang/dotnet.yml
+      uses: ./.pulumi-package-publish/langs/langs/dotnet.yml
     - name: Python - Publish to PyPi
       if: (contains(inputs.sdk, 'python') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!python')
-      uses: ${{ github.action_path }}/lang/python.yml
+      uses: ./.pulumi-package-publish/langs/langs/python.yml
     - name: Java - Publish to Maven
       if: (contains(inputs.sdk, 'java') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!java')
-      uses: ${{ github.action_path }}/lang/java.yml
+      uses: ./.pulumi-package-publish/langs/langs/java.yml
