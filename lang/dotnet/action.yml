@@ -9,7 +9,7 @@ runs:
       with:
         dotnet-version: ${{ env.DOTNETVERSION }}
     - name: Download dotnet SDK
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: dotnet-sdk.tar.gz
         path: ${{ github.workspace }}/sdk/

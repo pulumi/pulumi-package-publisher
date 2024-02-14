@@ -10,7 +10,7 @@ runs:
         node-version: ${{ env.NODEVERSION }}
         registry-url: https://registry.npmjs.org
     - name: Download nodejs SDK
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: nodejs-sdk.tar.gz
         path: ${{ github.workspace }}/sdk/
