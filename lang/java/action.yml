@@ -15,7 +15,7 @@ runs:
       with:
         gradle-version: "7.6"
     - name: Download java SDK
-      uses: actions/download-artifact@v2
+      uses: actions/download-artifact@v4
       with:
         name: java-sdk.tar.gz
         path: ${{ github.workspace}}/sdk/
