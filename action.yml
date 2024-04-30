@@ -42,9 +42,6 @@ runs:
       uses: actions/checkout@v3
       with:
         repository: ${{ github.repository }}
-    - name: Unshallow clone for tags
-      run: git fetch --prune --unshallow --tags
-      shell: bash
     - name: Install Go
       uses: actions/setup-go@v3
       with:
@@ -55,7 +52,6 @@ runs:
         repo: pulumi/pulumictl
     - name: Install Pulumi CLI
       uses: pulumi/action-install-pulumi-cli@v2
-
 
     # `uses:` statements do not support expressions
     # (https://github.com/actions/runner/issues/895), so this is invalid:
