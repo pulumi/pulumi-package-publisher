@@ -1,6 +1,9 @@
 name: 'Pulumi Package publisher'
 description: 'A GitHub Action that publishes provider SDKs'
 inputs:
+  version:
+    description: The version of the provider being published.
+    required: true
   sdk:
     description: |
       The name of the language SDK being published.
@@ -42,9 +45,6 @@ runs:
       uses: actions/checkout@v3
       with:
         repository: ${{ github.repository }}
-    - name: Unshallow clone for tags
-      run: git fetch --prune --unshallow --tags
-      shell: bash
     - name: Install Go
       uses: actions/setup-go@v3
       with:
@@ -55,7 +55,6 @@ runs:
         repo: pulumi/pulumictl
     - name: Install Pulumi CLI
       uses: pulumi/action-install-pulumi-cli@v2
-
 
     # `uses:` statements do not support expressions
     # (https://github.com/actions/runner/issues/895), so this is invalid:
@@ -86,3 +85,5 @@ runs:
     - name: Java - Publish to Maven
       if: (contains(inputs.sdk, 'java') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!java')
       uses: ./.pulumi-package-publish/lang/java
+      env:
+        PROVIDER_VERSION: ${{ inputs.version }}

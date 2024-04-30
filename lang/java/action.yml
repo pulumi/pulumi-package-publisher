@@ -23,13 +23,11 @@ runs:
       run: tar -zxf ${{github.workspace}}/sdk/java.tar.gz -C
         ${{github.workspace}}/sdk/java
       shell: bash
-    - name: Set PACKAGE_VERSION to Env
-      run: echo "PACKAGE_VERSION=$(pulumictl get version --language generic)" >>
-        $GITHUB_ENV
-      shell: bash
     - name: Publish Java SDK
       continue-on-error: true
       uses: gradle/gradle-build-action@9b814496b50909128c6a52622b416c5ffa04db49
+      env:
+        PACKAGE_VERSION: ${{ env.PROVIDER_VERSION }}
       with:
         arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository
         build-root-directory: ./sdk/java
