@@ -1,6 +1,9 @@
 name: 'Pulumi Package publisher'
 description: 'A GitHub Action that publishes provider SDKs'
 inputs:
+  version:
+    description: The version of the provider being published. If not provided, the version will be calculated by pulumi/provider-version-action@v1
+    required: false
   sdk:
     description: |
       The name of the language SDK being published.
@@ -32,12 +35,18 @@ inputs:
 #
 #    If (${LANGUAGE} or all (but not !all)) and not !${LANGUAGE}
 
+
 runs:
   using: "composite"
   steps:
     - name: Verify input
       run: echo 'Publishing SDK:' && echo ${{ inputs.sdk }}
       shell: bash
+    - name: Fetch version
+      if: inputs.version == ''
+      uses: pulumi/provider-version-action@v1
+      with:
+        set-env: PROVIDER_VERSION
     - name: Checkout Repo
       uses: actions/checkout@v3
       with:
@@ -82,3 +91,5 @@ runs:
     - name: Java - Publish to Maven
       if: (contains(inputs.sdk, 'java') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!java')
       uses: ./.pulumi-package-publish/lang/java
+      env:
+        PROVIDER_VERSION: ${{ inputs.version || env.PROVIDER_VERSION }}
