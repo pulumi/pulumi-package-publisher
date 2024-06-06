@@ -4,6 +4,18 @@ inputs:
   version:
     description: The version of the provider being published.
     required: true
+  dotnet-version:
+    description: The version of Dotnet being used in the provider
+    required: true
+  java-version:
+    description: The version of Java being used in the provider
+    required: true
+  node-version:
+    description: The version of Node being used in the provider
+    required: true
+  python-version:
+    description: The version of Python being used in the provider
+    required: true
   sdk:
     description: |
       The name of the language SDK being published.
