@@ -7,7 +7,7 @@ runs:
     - name: Setup Python
       uses: actions/setup-python@v2
       with:
-        python-version: ${{ inputs.python-version }}
+        python-version: ${{ env.PYTHON_VERSION }}
     - name: Download python SDK
       uses: actions/download-artifact@v4
       with:
