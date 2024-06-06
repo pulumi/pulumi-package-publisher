@@ -7,7 +7,7 @@ runs:
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ env.NODEVERSION }}
+        node-version: ${{ env.NODE_VERSION }}
         registry-url: https://registry.npmjs.org
     - name: Download nodejs SDK
       uses: actions/download-artifact@v4
