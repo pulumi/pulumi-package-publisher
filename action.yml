@@ -98,7 +98,7 @@ runs:
     - name: Python - Publish to PyPi
       if: (contains(inputs.sdk, 'python') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!python')
       uses: ./.pulumi-package-publish/lang/python
-      env: :
+      env:
         PYTHON_VERSION: ${{ inputs.python-version }}
     - name: Java - Publish to Maven
       if: (contains(inputs.sdk, 'java') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!java')
