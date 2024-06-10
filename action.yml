@@ -16,6 +16,12 @@ inputs:
   python-version:
     description: The version of Python being used in the provider
     required: true
+  assertPrerelease:
+    description: |
+      Assert that `version` argument describes a pre-release.
+
+      `assertPrerelease` should be set wherever you *do not* want to publish releases
+      from, like CI.
   sdk:
     description: |
       The name of the language SDK being published.
@@ -53,6 +59,14 @@ runs:
     - name: Verify input
       run: echo 'Publishing SDK:' && echo ${{ inputs.sdk }}
       shell: bash
+    - name: Assert pre-release
+      if: assertPrerelease
+      run: |
+        if [[ "${{ inputs.version }}" =~ "^v[0-9]+\.[0-9]+\.[0-9]+$" ]] then
+        	echo "It looks like you have attempted to publish a non-alpha release by accident."
+        	exit 1;
+        fi
+      shell: bash
     - name: Checkout Repo
       uses: actions/checkout@v3
       with:
@@ -88,22 +102,24 @@ runs:
     - name: Nodejs - Publish to NPM
       uses: ./.pulumi-package-publish/lang/nodejs
       if: (contains(inputs.sdk, 'nodejs') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!nodejs')
-      env:
-        NODE_VERSTION: ${{ inputs.node-version }}
+      with:
+        version: ${{ inputs.version }}
+        node-version: ${{ inputs.node-version }}
     - name: .NET - Publish to Nuget
       if: (contains(inputs.sdk, 'dotnet') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!dotnet')
       uses: ./.pulumi-package-publish/lang/dotnet
-      env:
-        DOTNET_VERSTION: ${{ inputs.dotnet-version }}
+      with:
+        version: ${{ inputs.version }}
+        dotnet-version: ${{ inputs.dotnet-version }}
     - name: Python - Publish to PyPi
       if: (contains(inputs.sdk, 'python') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!python')
       uses: ./.pulumi-package-publish/lang/python
-      env:
-        PYTHON_VERSION: ${{ inputs.python-version }}
+      with:
+        version: ${{ inputs.version }}
+        python-version: ${{ inputs.python-version }}
     - name: Java - Publish to Maven
       if: (contains(inputs.sdk, 'java') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!java')
       uses: ./.pulumi-package-publish/lang/java
-      env:
-        PROVIDER_VERSION: ${{ inputs.version }}
-        JAVA_VERSION: ${{ inputs.java-version }}
-
+      with:
+        version: ${{ inputs.version }}
+        java-version: ${{ inputs.java-version }}

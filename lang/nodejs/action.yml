@@ -1,13 +1,34 @@
 name: 'Publish to NPM'
-description: 'A subcomponent of pulumi-package-publish'
+description: |
+  A subcomponent of pulumi-package-publish
+
+inputs:
+  version:
+    description: The version of the provider being published.
+    required: true
+  node-version:
+    description: The version of Node being used in the provider
+    required: true
 
 runs:
   using: "composite"
   steps:
+    - name: Validate Package Version
+      shell: bash
+      # Ensure that we are publishing only the version that we expect (and that is set in
+      # inputs.version). Otherwise we could publish a version that doesn't match what we
+      # are trying to publish.
+      run: >-
+        ACTUAL="$(cat ${{ github.workspace }}/sdk/nodejs/bin/package.json | jq .version)" &&
+        JS=$(pulumictl convert-version --version "${{ inputs.version }} --language javascript &&
+        if [[ "$ACTUAL" != "$JS" ]]; then
+          echo "Found version $ACTUAL does not match expected version $JS";
+          exit 1;
+        fi
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
-        node-version: ${{ env.NODE_VERSION }}
+        node-version: ${{ inputs.node-version }}
         registry-url: https://registry.npmjs.org
     - name: Download nodejs SDK
       uses: actions/download-artifact@v4
