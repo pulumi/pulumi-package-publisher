@@ -60,7 +60,7 @@ runs:
       run: echo 'Publishing SDK:' && echo ${{ inputs.sdk }}
       shell: bash
     - name: Assert pre-release
-      if: assertPrerelease
+      if: inputs.assertPrerelease == "true"
       run: |
         if [[ "${{ inputs.version }}" =~ "^v[0-9]+\.[0-9]+\.[0-9]+$" ]] then
         	echo "It looks like you have attempted to publish a non-alpha release by accident."
