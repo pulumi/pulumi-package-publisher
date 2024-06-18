@@ -13,18 +13,6 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Validate Package Version
-      shell: bash
-      # Ensure that we are publishing only the version that we expect (and that is set in
-      # inputs.version). Otherwise we could publish a version that doesn't match what we
-      # are trying to publish.
-      run: >-
-        ACTUAL="$(cat ${{ github.workspace }}/sdk/nodejs/bin/package.json | jq .version)" &&
-        JS="$(pulumictl convert-version --version "${{ inputs.version }}" --language javascript)" &&
-        if [[ "$ACTUAL" != "$JS" ]]; then
-          echo "Found version $ACTUAL does not match expected version $JS";
-          exit 1;
-        fi
     - name: Setup Node
       uses: actions/setup-node@v3
       with:
@@ -39,6 +27,18 @@ runs:
       run: tar -zxf ${{ github.workspace }}/sdk/nodejs.tar.gz -C
         ${{ github.workspace }}/sdk/nodejs
       shell: bash
+    - name: Validate Package Version
+      shell: bash
+      # Ensure that we are publishing only the version that we expect (and that is set in
+      # inputs.version). Otherwise we could publish a version that doesn't match what we
+      # are trying to publish.
+      run: >-
+        ACTUAL="$(cat ${{ github.workspace }}/sdk/nodejs/bin/package.json | jq .version)" &&
+        JS="$(pulumictl convert-version --version "${{ inputs.version }}" --language javascript)" &&
+        if [[ "$ACTUAL" != "$JS" ]]; then
+          echo "Found version $ACTUAL does not match expected version $JS";
+          exit 1;
+        fi
     - name: Run npm whoami
       run: npm whoami
       shell: bash
