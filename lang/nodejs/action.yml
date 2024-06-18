@@ -33,7 +33,7 @@ runs:
       # inputs.version). Otherwise we could publish a version that doesn't match what we
       # are trying to publish.
       run: >-
-        ACTUAL="v$(cat ${{ github.workspace }}/sdk/nodejs/bin/package.json | jq .version)" &&
+        ACTUAL="v$(cat ${{ github.workspace }}/sdk/nodejs/bin/package.json | jq .version --raw-output)" &&
         JS="$(pulumictl convert-version --version "${{ inputs.version }}" --language javascript)" &&
         if [[ "$ACTUAL" != "$JS" ]]; then
           echo "Found version $ACTUAL does not match expected version $JS";
