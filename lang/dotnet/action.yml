@@ -1,5 +1,17 @@
 name: 'Publish to Nuget'
-description: 'A subcomponent of pulumi-package-publish'
+description: |
+  A subcomponent of pulumi-package-publish
+
+inputs:
+  version:
+    description: >-
+      The version of the provider being published.
+
+      TODO: Validate that the SDK we are publishing matches this input.
+    required: true
+  dotnet-version:
+    description: The version of Dotnet being used in the provider
+    required: true
 
 runs:
   using: "composite"
@@ -7,7 +19,7 @@ runs:
     - name: Setup DotNet
       uses: actions/setup-dotnet@v3
       with:
-        dotnet-version: ${{ env.DOTNET_VERSION }}
+        dotnet-version: ${{ inputs.dotnet-version }}
     - name: Download dotnet SDK
       uses: actions/download-artifact@v4
       with:

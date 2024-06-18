@@ -1,5 +1,14 @@
 name: 'Publish to Maven'
-description: 'A subcomponent of pulumi-package-publish'
+description: |
+  A subcomponent of pulumi-package-publish
+
+inputs:
+  version:
+    description: The version of the provider being published.
+    required: true
+  java-version:
+    description: The version of Java being used in the provider
+    required: true
 
 runs:
   using: "composite"
@@ -9,7 +18,7 @@ runs:
       with:
         cache: gradle
         distribution: temurin
-        java-version: ${{ env.JAVA_VERSION }}
+        java-version: ${{ inputs.java-version }}
     - name: Setup Gradle
       uses: gradle/gradle-build-action@v2
       with:
