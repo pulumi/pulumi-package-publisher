@@ -1,12 +1,22 @@
 # pulumi-package-publisher
+
 A composite action for publishing Pulumi packages
 
 _This Action is currently in preview and meant for internal use. Any functionality can and likely will change._
 
 ### Purpose
+
 This Action automates setup and publication to the package registries of four Pulumi languages.
 
 ### Setup
+
+Ensure the following tools are installed:
+
+- Pulumi CLI
+- Go
+- Node.js
+- Python
+- Java (and Gradle)
 
 Set the following environment variables in your Workflow and your GitHub Action secrets:
 
@@ -32,6 +42,7 @@ env:
 ### Use
 
 Add this action to your Workflow as a step to publish to all four supported registries:
+
 - PyPI
 - Maven
 - npm

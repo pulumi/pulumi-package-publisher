@@ -9,17 +9,10 @@ inputs:
 
       TODO: Validate that the SDK we are publishing matches this input.
     required: true
-  python-version:
-    description: The version of Python being used in the provider
-    required: true
 
 runs:
   using: "composite"
   steps:
-    - name: Setup Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: ${{ inputs.python-version }}
     - name: Download python SDK
       uses: actions/download-artifact@v4
       with:

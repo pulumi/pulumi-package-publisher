@@ -4,18 +4,6 @@ inputs:
   version:
     description: The version of the provider being published.
     required: true
-  dotnet-version:
-    description: The version of Dotnet being used in the provider
-    required: true
-  java-version:
-    description: The version of Java being used in the provider
-    required: true
-  node-version:
-    description: The version of Node being used in the provider
-    required: true
-  python-version:
-    description: The version of Python being used in the provider
-    required: true
   assertPrerelease:
     description: |
       Assert that `version` argument describes a pre-release.
@@ -71,10 +59,6 @@ runs:
       uses: actions/checkout@v3
       with:
         repository: ${{ github.repository }}
-    - name: Install Go
-      uses: actions/setup-go@v3
-      with:
-        go-version: ${{ env.GOVERSION }}
     - name: Install pulumictl
       uses: jaxxstorm/action-install-gh-release@v1.5.0
       with:
@@ -104,22 +88,18 @@ runs:
       if: (contains(inputs.sdk, 'nodejs') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!nodejs')
       with:
         version: ${{ inputs.version }}
-        node-version: ${{ inputs.node-version }}
     - name: .NET - Publish to Nuget
       if: (contains(inputs.sdk, 'dotnet') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!dotnet')
       uses: ./.pulumi-package-publish/lang/dotnet
       with:
         version: ${{ inputs.version }}
-        dotnet-version: ${{ inputs.dotnet-version }}
     - name: Python - Publish to PyPi
       if: (contains(inputs.sdk, 'python') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!python')
       uses: ./.pulumi-package-publish/lang/python
       with:
         version: ${{ inputs.version }}
-        python-version: ${{ inputs.python-version }}
     - name: Java - Publish to Maven
       if: (contains(inputs.sdk, 'java') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!java')
       uses: ./.pulumi-package-publish/lang/java
       with:
         version: ${{ inputs.version }}
-        java-version: ${{ inputs.java-version }}
