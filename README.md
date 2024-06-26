@@ -22,21 +22,13 @@ Set the following environment variables in your Workflow and your GitHub Action 
 
 ```yaml
 env:
-    DOTNETVERSION: |
-    6.0.x
-    3.1.301
     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    GOVERSION: 1.20.1
-    JAVAVERSION: "11"
-    NODEVERSION: 16.x
     NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
     NUGET_PUBLISH_KEY: ${{ secrets.NUGET_PUBLISH_KEY }}
     PYPI_PASSWORD: ${{ secrets.PYPI_PASSWORD }}
-    PYTHONVERSION: "3.9"
     SIGNING_KEY: ${{ secrets.JAVA_SIGNING_KEY }}
     SIGNING_KEY_ID: ${{ secrets.JAVA_SIGNING_KEY_ID }}
     SIGNING_PASSWORD: ${{ secrets.JAVA_SIGNING_PASSWORD }}
-    SLACK_WEBHOOK_URL: ${{ secrets.SLACK_WEBHOOK_URL }}
 ```
 
 ### Use
