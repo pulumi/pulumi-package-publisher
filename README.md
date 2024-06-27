@@ -13,10 +13,13 @@ This Action automates setup and publication to the package registries of four Pu
 Ensure the following tools are installed:
 
 - Pulumi CLI
+- pulumictl
 - Go
 - Node.js
 - Python
 - Java (and Gradle)
+
+It's expected that the repository is checked out.
 
 Set the following environment variables in your Workflow and your GitHub Action secrets:
 
