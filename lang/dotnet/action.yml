@@ -9,17 +9,10 @@ inputs:
 
       TODO: Validate that the SDK we are publishing matches this input.
     required: true
-  dotnet-version:
-    description: The version of Dotnet being used in the provider
-    required: true
 
 runs:
   using: "composite"
   steps:
-    - name: Setup DotNet
-      uses: actions/setup-dotnet@v3
-      with:
-        dotnet-version: ${{ inputs.dotnet-version }}
     - name: Download dotnet SDK
       uses: actions/download-artifact@v4
       with:
