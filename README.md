@@ -49,6 +49,19 @@ steps:
     uses: pulumi/pulumi-package-publisher@v0.0.6
 ```
 
+The workflow expects that your GitHub Actions have built the SDKs and created
+[artifacts](https://github.com/actions/upload-artifact) with the following naming convention:
+
+```yaml
+- java-sdk.tar.gz
+- nodejs-sdk.tar.gz
+- python-sdk.tar.gz
+- dotnet-sdk.tar.gz
+```
+
+Check out [pulumi/publish-go-sdk-action](https://github.com/pulumi/publish-go-sdk-action) for helping automate tagging
+the generated Go SDK to make it available to end-users.
+
 #### `with.sdk`
 
 Optionally, you may specify language SDKs individually or in a comma separated list.
