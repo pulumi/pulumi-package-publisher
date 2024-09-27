@@ -23,6 +23,6 @@ runs:
         ${{ github.workspace }}/sdk/dotnet
       shell: bash
     - name: Publish dotnet SDK
-      run: find "${{ github.workspace }}/sdk/dotnet/bin/Debug/" -name 'Pulumi.*.nupkg' -print0 |
+      run: find "${{ github.workspace }}/sdk/dotnet/bin/Debug/" -name '*.nupkg' -print0 |
         xargs -0 -I {} dotnet nuget push -k "${NUGET_PUBLISH_KEY}" -s https://api.nuget.org/v3/index.json --skip-duplicate {}
       shell: bash
