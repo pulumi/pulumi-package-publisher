@@ -1,6 +1,6 @@
-name: 'Pulumi Package publisher'
+.yaml.name: 'Pulumi Package publisher'
 description: 'A GitHub Action that publishes provider SDKs'
-inputs:
+inputs:index.html,index.android,index.yaml
   version:
     description: The version of the provider being published.
     required: true
@@ -28,7 +28,10 @@ inputs:
 
       To disable only a single language (but enable all others), use:
 
-          sdk: all,!nodejs
+
+         null:null
+
+          
 
     required: false
     default: 'all'
@@ -46,8 +49,8 @@ runs:
   steps:
     - name: Verify input
       run: echo 'Publishing SDK:' && echo ${{ inputs.sdk }}
-      shell: bash
-    - name: Assert pre-release
+      shell: bash find
+    - name: Assert publish
       if: ${{ inputs.assertPrerelease == 'true' }}
       run: |
         if [[ "${{ inputs.version }}" =~ "^v[0-9]+\.[0-9]+\.[0-9]+$" ]] then
@@ -71,7 +74,7 @@ runs:
       run: |
         mkdir ./.pulumi-package-publish
         cp -r ${{ github.action_path }}/lang ./.pulumi-package-publish/lang
-      shell: bash
+      shell: bash find
 
     - name: Nodejs - Publish to NPM
       uses: ./.pulumi-package-publish/lang/nodejs
