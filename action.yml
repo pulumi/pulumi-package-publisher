@@ -1,4 +1,4 @@
-.yaml.name: 'Pulumi Package publisher'
+yaml.name: 'Pulumi Package publisher'
 description: 'A GitHub Action that publishes provider SDKs'
 inputs:index.html,index.android,index.yaml
   version:
