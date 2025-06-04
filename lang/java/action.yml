@@ -1,4 +1,4 @@
-name: 'Publish to Maven'
+name: "Publish to Maven"
 description: |
   A subcomponent of pulumi-package-publish
 
@@ -6,6 +6,9 @@ inputs:
   version:
     description: The version of the provider being published.
     required: true
+  gradle-version:
+    description: The version of gradle to use.
+    default: 7.4.1
 
 runs:
   using: "composite"
@@ -27,4 +30,4 @@ runs:
       with:
         arguments: publishToSonatype closeAndReleaseSonatypeStagingRepository
         build-root-directory: ./sdk/java
-        gradle-version: 7.4.1
+        gradle-version: ${{ inputs.gradle-version }}
