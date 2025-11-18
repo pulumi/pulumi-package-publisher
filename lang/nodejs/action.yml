@@ -16,7 +16,7 @@ runs:
         name: nodejs-sdk.tar.gz
         path: ${{ github.workspace }}/sdk/
     - name: Uncompress nodejs SDK
-      run: tar -zxf ${{ github.workspace }}/sdk/nodejs.tar.gz -C
+      run: mkdir -p ${{ github.workspace }}/sdk/nodejs && tar -zxf ${{ github.workspace }}/sdk/nodejs.tar.gz -C
         ${{ github.workspace }}/sdk/nodejs
       shell: bash
     - name: Validate Package Version
