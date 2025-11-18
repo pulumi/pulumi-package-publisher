@@ -19,7 +19,7 @@ runs:
         name: dotnet-sdk.tar.gz
         path: ${{ github.workspace }}/sdk/
     - name: Uncompress dotnet SDK
-      run: tar -zxf ${{ github.workspace }}/sdk/dotnet.tar.gz -C
+      run: mkdir -p ${{ github.workspace }}/sdk/dotnet && tar -zxf ${{ github.workspace }}/sdk/dotnet.tar.gz -C
         ${{ github.workspace }}/sdk/dotnet
       shell: bash
     - name: Publish dotnet SDK

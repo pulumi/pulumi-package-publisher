@@ -19,7 +19,7 @@ runs:
         name: python-sdk.tar.gz
         path: ${{ github.workspace }}/sdk/
     - name: Uncompress python SDK
-      run: tar -zxf ${{ github.workspace }}/sdk/python.tar.gz -C
+      run: mkdir -p ${{ github.workspace }}/sdk/python && tar -zxf ${{ github.workspace }}/sdk/python.tar.gz -C
         ${{ github.workspace }}/sdk/python
       shell: bash
     - name: Install Twine
