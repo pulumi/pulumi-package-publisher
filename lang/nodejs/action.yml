@@ -11,7 +11,7 @@ runs:
   using: "composite"
   steps:
     - name: Download nodejs SDK
-      uses: actions/download-artifact@v4
+      uses: actions/download-artifact@v8
       with:
         name: nodejs-sdk.tar.gz
         path: ${{ github.workspace }}/sdk/
