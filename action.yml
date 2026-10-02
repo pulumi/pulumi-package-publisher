@@ -32,6 +32,15 @@ inputs:
 
     required: false
     default: 'all'
+  npmTrustedPublishing:
+    description: |
+      Publish the Node.js SDK to npm using trusted publishing instead of NODE_AUTH_TOKEN.
+
+      When enabled, the Node.js publisher skips `npm whoami` and asserts that the
+      workflow is running on a GitHub-hosted runner with GitHub Actions OIDC
+      available and npm >= 11.5.1.
+    required: false
+    default: 'false'
 
 # The if: statement for the above is:
 #
@@ -78,6 +87,7 @@ runs:
       if: (contains(inputs.sdk, 'nodejs') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!nodejs')
       with:
         version: ${{ inputs.version }}
+        npmTrustedPublishing: ${{ inputs.npmTrustedPublishing }}
     - name: .NET - Publish to Nuget
       if: (contains(inputs.sdk, 'dotnet') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!dotnet')
       uses: ./.pulumi-package-publish/lang/dotnet

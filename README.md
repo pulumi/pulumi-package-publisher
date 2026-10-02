@@ -34,6 +34,29 @@ env:
     SIGNING_PASSWORD: ${{ secrets.JAVA_SIGNING_PASSWORD }}
 ```
 
+To publish Node.js SDKs with npm trusted publishing, set `npmTrustedPublishing: true`, omit `NODE_AUTH_TOKEN`, and grant the publishing job `id-token: write` permissions. The Node.js publisher will require a GitHub-hosted runner and npm >= 11.5.1.
+
+Before using npm trusted publishing, configure the package on npm. The package must already exist, and the npm CLI that configures trust must be npm >= 11.15.0:
+
+```sh
+npm install -g npm@^11.15.0
+npm trust github <package-name> \
+  --repo <owner>/<repo> \
+  --file <workflow-file>.yml \
+  --allow-publish
+```
+
+For example:
+
+```sh
+npm trust github @pulumi/example \
+  --repo pulumi/pulumi-example \
+  --file ci.yml \
+  --allow-publish
+```
+
+The trusted publisher is bound to the GitHub repository and workflow file name that enter the workflow. Make sure the `--file` value matches the entry workflow that calls this action.
+
 ### Use
 
 Add this action to your Workflow as a step to publish to all four supported registries:
@@ -84,6 +107,20 @@ steps:
   - uses: pulumi/pulumi-package-publisher@main
     with:
       sdk: nodejs
+```
+
+###### Publish the NodeJS SDK using npm trusted publishing
+
+```yaml
+permissions:
+  contents: read
+  id-token: write
+
+steps:
+  - uses: pulumi/pulumi-package-publisher@main
+    with:
+      sdk: nodejs
+      npmTrustedPublishing: true
 ```
 
 ###### Publish the Java and Python SDKs
