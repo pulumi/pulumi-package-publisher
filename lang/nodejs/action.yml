@@ -6,6 +6,10 @@ inputs:
   version:
     description: The version of the provider being published.
     required: true
+  npmTrustedPublishing:
+    description: Publish to npm using trusted publishing instead of NODE_AUTH_TOKEN.
+    required: false
+    default: 'false'
 
 runs:
   using: "composite"
@@ -31,7 +35,46 @@ runs:
           echo "Found version $ACTUAL does not match expected version $JS";
           exit 1;
         fi
+    - name: Assert npm trusted publishing prerequisites
+      if: ${{ inputs.npmTrustedPublishing == 'true' }}
+      run: |
+        set -euo pipefail
+
+        if [[ "${RUNNER_ENVIRONMENT:-}" != "github-hosted" ]]; then
+          echo "npm trusted publishing requires a GitHub-hosted runner."
+          exit 1
+        fi
+
+        if [[ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]]; then
+          echo "npm trusted publishing requires GitHub Actions OIDC. Set 'id-token: write' on this job."
+          exit 1
+        fi
+
+        if [[ -n "${NODE_AUTH_TOKEN:-}" ]]; then
+          echo "npmTrustedPublishing is enabled, but NODE_AUTH_TOKEN is set. Remove NODE_AUTH_TOKEN to publish with OIDC."
+          exit 1
+        fi
+
+        npm_version="$(npm --version)"
+        node - "$npm_version" <<'NODE'
+        const actual = process.argv[2];
+        const required = "11.5.1";
+        const parse = version => version.split("-")[0].split(".").map(part => Number(part));
+        const [actualMajor, actualMinor, actualPatch] = parse(actual);
+        const [requiredMajor, requiredMinor, requiredPatch] = parse(required);
+        const ok = actualMajor > requiredMajor
+          || (actualMajor === requiredMajor && actualMinor > requiredMinor)
+          || (actualMajor === requiredMajor && actualMinor === requiredMinor && actualPatch >= requiredPatch);
+        if (!ok) {
+          console.error(`npm trusted publishing requires npm >= ${required}; found ${actual}`);
+          process.exit(1);
+        }
+        NODE
+      shell: bash
+      env:
+        NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
     - name: Run npm whoami
+      if: ${{ inputs.npmTrustedPublishing != 'true' }}
       run: npm whoami
       shell: bash
       env:
