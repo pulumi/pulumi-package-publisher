@@ -41,6 +41,29 @@ inputs:
       available, npm >= 11.5.1, and Pulumi CLI >= 3.274.1.
     required: false
     default: 'false'
+  nugetTrustedPublishing:
+    description: |
+      Publish the .NET SDK to NuGet using trusted publishing instead of NUGET_PUBLISH_KEY.
+
+      When enabled, the .NET publisher exchanges a GitHub Actions OIDC token for a
+      short-lived NuGet API key via NuGet/login. Requires `id-token: write` and
+      `nugetUser`.
+    required: false
+    default: 'false'
+  nugetUser:
+    description: |
+      The nuget.org username (profile name, not email) that owns the NuGet trusted
+      publishing policy. Required when `nugetTrustedPublishing` is enabled.
+    required: false
+    default: ''
+  pypiTrustedPublishing:
+    description: |
+      Publish the Python SDK to PyPI using trusted publishing instead of PYPI_PASSWORD.
+
+      When enabled, pypa/gh-action-pypi-publish exchanges a GitHub Actions OIDC
+      token for a short-lived PyPI API token. Requires `id-token: write`.
+    required: false
+    default: 'false'
 
 # The if: statement for the above is:
 #
@@ -93,11 +116,14 @@ runs:
       uses: ./.pulumi-package-publish/lang/dotnet
       with:
         version: ${{ inputs.version }}
+        nugetTrustedPublishing: ${{ inputs.nugetTrustedPublishing }}
+        nugetUser: ${{ inputs.nugetUser }}
     - name: Python - Publish to PyPi
       if: (contains(inputs.sdk, 'python') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!python')
       uses: ./.pulumi-package-publish/lang/python
       with:
         version: ${{ inputs.version }}
+        pypiTrustedPublishing: ${{ inputs.pypiTrustedPublishing }}
     - name: Java - Publish to Maven
       if: (contains(inputs.sdk, 'java') || (contains(inputs.sdk, 'all') && !contains(inputs.sdk, '!all'))) && !contains(inputs.sdk, '!java')
       uses: ./.pulumi-package-publish/lang/java
