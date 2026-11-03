@@ -34,9 +34,21 @@ env:
     SIGNING_PASSWORD: ${{ secrets.JAVA_SIGNING_PASSWORD }}
 ```
 
-To publish Node.js SDKs with npm trusted publishing, set `npmTrustedPublishing: true`, omit `NODE_AUTH_TOKEN`, and grant the publishing job `id-token: write` permissions. The Node.js publisher will require a GitHub-hosted runner and npm >= 11.5.1.
+#### Trusted publishing
 
-Before using npm trusted publishing, configure the package on npm. The package must already exist, and the npm CLI that configures trust must be npm >= 11.15.0:
+The Node.js, .NET and Python publishers can authenticate with GitHub Actions OIDC (trusted publishing) instead of
+long-lived secrets. To set this up, you'll need to:
+- Grant the publishing job `id-token: write` permissions
+- Omit the long-lived token for the registry (`NODE_AUTH_TOKEN`, `NUGET_PUBLISH_KEY`, `PYPI_PASSWORD`)
+- Pass the appropriate flags to the workflow (documented per-registry below)
+
+##### npm
+
+Set `npmTrustedPublishing: true` and omit `NODE_AUTH_TOKEN`. The Node.js publisher requires a GitHub-hosted runner and
+npm >= 11.5.1.
+
+Before publishing, configure the package on npm. The package must already exist, and the npm CLI that configures trust
+must be npm >= 11.15.0:
 
 ```sh
 npm install -g npm@^11.15.0
@@ -55,7 +67,20 @@ npm trust github @pulumi/example \
   --allow-publish
 ```
 
-The trusted publisher is bound to the GitHub repository and workflow file name that enter the workflow. Make sure the `--file` value matches the entry workflow that calls this action.
+##### NuGet
+
+Set `nugetTrustedPublishing: true`, set `nugetUser` to the nuget.org username that owns the
+trusted publishing policy, and omit `NUGET_PUBLISH_KEY`.
+
+Before publishing, create a trusted publishing policy on nuget.org by following
+[NuGet's trusted publishing guide](https://learn.microsoft.com/en-us/nuget/nuget-org/trusted-publishing#github-actions-setup).
+
+##### PyPI
+
+Set `pypiTrustedPublishing: true` and omit `PYPI_USERNAME`/`PYPI_PASSWORD`.
+
+Before publishing, add a trusted publisher to the project on PyPI by following
+[PyPI's trusted publishing guide](https://docs.pypi.org/trusted-publishers/adding-a-publisher/).
 
 ### Use
 
@@ -109,7 +134,7 @@ steps:
       sdk: nodejs
 ```
 
-###### Publish the NodeJS SDK using npm trusted publishing
+###### Publish SDKs using trusted publishing
 
 ```yaml
 permissions:
@@ -119,8 +144,11 @@ permissions:
 steps:
   - uses: pulumi/pulumi-package-publisher@main
     with:
-      sdk: nodejs
+      sdk: nodejs,dotnet,python
       npmTrustedPublishing: true
+      nugetTrustedPublishing: true
+      nugetUser: pulumi
+      pypiTrustedPublishing: true
 ```
 
 ###### Publish the Java and Python SDKs

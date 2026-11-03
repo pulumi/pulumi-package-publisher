@@ -9,6 +9,16 @@ inputs:
 
       TODO: Validate that the SDK we are publishing matches this input.
     required: true
+  nugetTrustedPublishing:
+    description: Publish to NuGet using trusted publishing instead of NUGET_PUBLISH_KEY.
+    required: false
+    default: 'false'
+  nugetUser:
+    description: >-
+      The nuget.org username (profile name, not email) of the account that owns the
+      trusted publishing policy. Required when nugetTrustedPublishing is enabled.
+    required: false
+    default: ''
 
 runs:
   using: "composite"
@@ -22,7 +32,37 @@ runs:
       run: mkdir -p ${{ github.workspace }}/sdk/dotnet && tar -zxf ${{ github.workspace }}/sdk/dotnet.tar.gz -C
         ${{ github.workspace }}/sdk/dotnet
       shell: bash
+    - name: Assert NuGet trusted publishing prerequisites
+      if: ${{ inputs.nugetTrustedPublishing == 'true' }}
+      run: |
+        set -euo pipefail
+
+        if [[ -z "${NUGET_USER}" ]]; then
+          echo "NuGet trusted publishing requires the 'nugetUser' input to be set to the nuget.org account that owns the trusted publishing policy."
+          exit 1
+        fi
+
+        if [[ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]]; then
+          echo "NuGet trusted publishing requires GitHub Actions OIDC. Set 'id-token: write' on this job."
+          exit 1
+        fi
+
+        if [[ -n "${NUGET_PUBLISH_KEY:-}" ]]; then
+          echo "nugetTrustedPublishing is enabled, but NUGET_PUBLISH_KEY is set. Remove NUGET_PUBLISH_KEY to publish with OIDC."
+          exit 1
+        fi
+      shell: bash
+      env:
+        NUGET_USER: ${{ inputs.nugetUser }}
+    - name: Log in to NuGet with OIDC
+      id: nuget-login
+      if: ${{ inputs.nugetTrustedPublishing == 'true' }}
+      uses: NuGet/login@v1
+      with:
+        user: ${{ inputs.nugetUser }}
     - name: Publish dotnet SDK
       run: find "${{ github.workspace }}/sdk/dotnet/bin/Debug/" -name '*.nupkg' -print0 |
         xargs -0 -I {} dotnet nuget push -k "${NUGET_PUBLISH_KEY}" -s https://api.nuget.org/v3/index.json --skip-duplicate {}
       shell: bash
+      env:
+        NUGET_PUBLISH_KEY: ${{ inputs.nugetTrustedPublishing == 'true' && steps.nuget-login.outputs.NUGET_API_KEY || env.NUGET_PUBLISH_KEY }}
