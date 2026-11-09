@@ -15,7 +15,7 @@ Ensure the following tools are installed:
 - Pulumi CLI
 - pulumictl
 - Go
-- Node.js
+- Node.js (the npm publisher sets up Node.js 26)
 - Python
 - Java (and Gradle)
 
@@ -33,6 +33,29 @@ env:
     SIGNING_KEY_ID: ${{ secrets.JAVA_SIGNING_KEY_ID }}
     SIGNING_PASSWORD: ${{ secrets.JAVA_SIGNING_PASSWORD }}
 ```
+
+To publish Node.js SDKs with npm trusted publishing, set `npmTrustedPublishing: true`, omit `NODE_AUTH_TOKEN`, and grant the publishing job `id-token: write` permissions. The Node.js publisher will require a GitHub-hosted runner, npm >= 11.5.1, and Pulumi CLI >= 3.274.1 (which skips the `npm whoami` preflight for tokenless OIDC publishing).
+
+Before using npm trusted publishing, configure the package on npm. The package must already exist, and the npm CLI that configures trust must be npm >= 11.15.0:
+
+```sh
+npm install -g npm@^11.15.0
+npm trust github <package-name> \
+  --repo <owner>/<repo> \
+  --file <workflow-file>.yml \
+  --allow-publish
+```
+
+For example:
+
+```sh
+npm trust github @pulumi/example \
+  --repo pulumi/pulumi-example \
+  --file ci.yml \
+  --allow-publish
+```
+
+The trusted publisher is bound to the GitHub repository and workflow file name that enter the workflow. Make sure the `--file` value matches the entry workflow that calls this action.
 
 ### Use
 
@@ -86,6 +109,20 @@ steps:
       sdk: nodejs
 ```
 
+###### Publish the NodeJS SDK using npm trusted publishing
+
+```yaml
+permissions:
+  contents: read
+  id-token: write
+
+steps:
+  - uses: pulumi/pulumi-package-publisher@main
+    with:
+      sdk: nodejs
+      npmTrustedPublishing: true
+```
+
 ###### Publish the Java and Python SDKs
 
 ```yaml
@@ -103,3 +140,17 @@ steps:
     with:
       sdk: all,!dotnet
 ```
+
+### Development
+
+The npm trusted-publishing prerequisites are implemented in
+`lang/nodejs/assert-trusted-publishing.ts`. With Node.js 26, run the TypeScript unit and CLI integration tests with:
+
+```sh
+cd lang/nodejs
+npm ci
+npm test
+```
+
+The npm publisher and its tests run TypeScript directly using Node.js 26, without a compilation
+step or runtime dependencies. `npm test` also runs `tsc --noEmit` for type checking.
