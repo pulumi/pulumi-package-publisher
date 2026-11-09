@@ -38,7 +38,7 @@ inputs:
 
       When enabled, the Node.js publisher skips `npm whoami` and asserts that the
       workflow is running on a GitHub-hosted runner with GitHub Actions OIDC
-      available and npm >= 11.5.1.
+      available, npm >= 11.5.1, and Pulumi CLI >= 3.274.1.
     required: false
     default: 'false'
 

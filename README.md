@@ -15,7 +15,7 @@ Ensure the following tools are installed:
 - Pulumi CLI
 - pulumictl
 - Go
-- Node.js
+- Node.js (the npm publisher sets up Node.js 26)
 - Python
 - Java (and Gradle)
 
@@ -140,3 +140,17 @@ steps:
     with:
       sdk: all,!dotnet
 ```
+
+### Development
+
+The npm trusted-publishing prerequisites are implemented in
+`lang/nodejs/assert-trusted-publishing.ts`. With Node.js 26, run the TypeScript unit and CLI integration tests with:
+
+```sh
+cd lang/nodejs
+npm ci
+npm test
+```
+
+The npm publisher and its tests run TypeScript directly using Node.js 26, without a compilation
+step or runtime dependencies. `npm test` also runs `tsc --noEmit` for type checking.

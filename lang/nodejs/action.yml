@@ -14,6 +14,10 @@ inputs:
 runs:
   using: "composite"
   steps:
+    - name: Setup Node.js 26
+      uses: actions/setup-node@v4
+      with:
+        node-version: '26'
     - name: Download nodejs SDK
       uses: actions/download-artifact@v4
       with:
@@ -37,46 +41,7 @@ runs:
         fi
     - name: Assert npm trusted publishing prerequisites
       if: ${{ inputs.npmTrustedPublishing == 'true' }}
-      run: |
-        set -euo pipefail
-
-        if [[ "${RUNNER_ENVIRONMENT:-}" != "github-hosted" ]]; then
-          echo "npm trusted publishing requires a GitHub-hosted runner."
-          exit 1
-        fi
-
-        if [[ -z "${ACTIONS_ID_TOKEN_REQUEST_URL:-}" ]]; then
-          echo "npm trusted publishing requires GitHub Actions OIDC. Set 'id-token: write' on this job."
-          exit 1
-        fi
-
-        if [[ -n "${NODE_AUTH_TOKEN:-}" ]]; then
-          echo "npmTrustedPublishing is enabled, but NODE_AUTH_TOKEN is set. Remove NODE_AUTH_TOKEN to publish with OIDC."
-          exit 1
-        fi
-
-        npm_version="$(npm --version)"
-        pulumi_version="$(pulumi version)"
-        node - "$npm_version" "$pulumi_version" <<'NODE'
-        for (const [tool, actual, required] of [
-          ["npm", process.argv[2], "11.5.1"],
-          ["Pulumi CLI", process.argv[3], "3.274.1"],
-        ]) {
-          const match = /^v?(\d+)\.(\d+)\.(\d+)(-[0-9A-Za-z.-]+)?(?:\+[0-9A-Za-z.-]+)?$/.exec(actual);
-          const minimum = required.split(".").map(Number);
-          let comparison = 0;
-          if (match) {
-            for (let i = 0; i < minimum.length; i++) {
-              comparison = Number(match[i + 1]) - minimum[i];
-              if (comparison !== 0) break;
-            }
-          }
-          if (!match || comparison < 0 || (comparison === 0 && match[4])) {
-            console.error(`npm trusted publishing requires ${tool} >= ${required}; found ${actual}`);
-            process.exit(1);
-          }
-        }
-        NODE
+      run: node "${{ github.action_path }}/assert-trusted-publishing.ts"
       shell: bash
       env:
         NODE_AUTH_TOKEN: ${{ env.NODE_AUTH_TOKEN }}
