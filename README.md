@@ -34,7 +34,7 @@ env:
     SIGNING_PASSWORD: ${{ secrets.JAVA_SIGNING_PASSWORD }}
 ```
 
-To publish Node.js SDKs with npm trusted publishing, set `npmTrustedPublishing: true`, omit `NODE_AUTH_TOKEN`, and grant the publishing job `id-token: write` permissions. The Node.js publisher will require a GitHub-hosted runner and npm >= 11.5.1.
+To publish Node.js SDKs with npm trusted publishing, set `npmTrustedPublishing: true`, omit `NODE_AUTH_TOKEN`, and grant the publishing job `id-token: write` permissions. The Node.js publisher will require a GitHub-hosted runner, npm >= 11.5.1, and Pulumi CLI >= 3.274.1 (which skips the `npm whoami` preflight for tokenless OIDC publishing).
 
 Before using npm trusted publishing, configure the package on npm. The package must already exist, and the npm CLI that configures trust must be npm >= 11.15.0:
 
